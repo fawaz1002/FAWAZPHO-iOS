@@ -3,6 +3,7 @@ workflows:
     name: FAWAZPHO iOS
     instance_type: mac_mini_m2
     max_build_duration: 60
+
     scripts:
       - name: Prepare project files
         script: |
@@ -15,4 +16,20 @@ workflows:
 
       - name: Build unsigned simulator app
         script: |
-          xcodebuild -project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj -scheme FAWAZPHO -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
+          xcodebuild \
+            -project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj \
+            -scheme FAWAZPHO \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package simulator app
+        script: |
+          mkdir -p build/artifacts
+          cd build/DerivedData/Build/Products/Debug-iphonesimulator
+          zip -r ../../../../artifacts/FAWAZPHO-iOS-Simulator.zip FAWAZPHO.app
+
+    artifacts:
+      - build/artifacts/FAWAZPHO-iOS-Simulator.zip
