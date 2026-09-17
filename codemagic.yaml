@@ -6,5 +6,5 @@ workflows:
       xcode: latest
     scripts:
       - name: Build unsigned simulator app
-        script: |
-xcodebuild -project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj -scheme FAWAZPHO -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
+              script: |
+        xcodebuild -project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj -scheme FAWAZPHO -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
