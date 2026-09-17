@@ -1,8 +1,17 @@
 workflows:
-  ios-simulator:
-    name: FAWAZPHO iOS
+  ios-testflight:
+    name: FAWAZPHO TestFlight
     instance_type: mac_mini_m2
     max_build_duration: 60
+
+    integrations:
+      app_store_connect: Codemagic-New
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.fawazpho.app
+      xcode: latest
 
     scripts:
       - name: Prepare project files
@@ -14,22 +23,20 @@ workflows:
           rm -rf FAWAZPHO.xcodeproj/FAWAZPHO/Assets.xcassets
           unzip -q Assets.xcassets.zip -d FAWAZPHO.xcodeproj/FAWAZPHO/
 
-      - name: Build unsigned simulator app
+      - name: Set up code signing
         script: |
-          xcodebuild \
-            -project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj \
-            -scheme FAWAZPHO \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -derivedDataPath build/DerivedData \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+          xcode-project use-profiles
 
-      - name: Package simulator app
+      - name: Build IPA
         script: |
-          mkdir -p build/artifacts
-          cd build/DerivedData/Build/Products/Debug-iphonesimulator
-          zip -r ../../../../artifacts/FAWAZPHO-iOS-Simulator.zip FAWAZPHO.app
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
+            --scheme "FAWAZPHO"
 
     artifacts:
-      - build/artifacts/FAWAZPHO-iOS-Simulator.zip
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
