@@ -4,8 +4,12 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 60
     scripts:
-      - name: Prepare Assets
+      - name: Prepare project files
         script: |
+          mkdir -p FAWAZPHO.xcodeproj/FAWAZPHO
+          cp FAWAZPHOApp.swift FAWAZPHO.xcodeproj/FAWAZPHO/FAWAZPHOApp.swift
+          cp ContentView.swift FAWAZPHO.xcodeproj/FAWAZPHO/ContentView.swift
+          cp Info.plist FAWAZPHO.xcodeproj/FAWAZPHO/Info.plist
           rm -rf FAWAZPHO.xcodeproj/FAWAZPHO/Assets.xcassets
           unzip -q Assets.xcassets.zip -d FAWAZPHO.xcodeproj/FAWAZPHO/
 
