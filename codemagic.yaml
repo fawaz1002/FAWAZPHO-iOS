@@ -1,0 +1,10 @@
+workflows:
+  ios-workflow:
+    name: FAWAZPHO iOS
+    max_build_duration: 60
+    environment:
+      xcode: latest
+    scripts:
+      - name: Build unsigned simulator app
+        script: |
+          xcodebuild -project FAWAZPHO.xcodeproj -scheme FAWAZPHO -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
