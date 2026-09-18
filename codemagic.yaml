@@ -9,8 +9,10 @@ workflows:
 
     environment:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.fawazpho.app
+        provisioning_profiles:
+          - FAWAZPHO_AppStore
+        certificates:
+          - FAWAZPHO_DIST
       xcode: latest
 
     scripts:
@@ -22,26 +24,18 @@ workflows:
           cp Info.plist FAWAZPHO.xcodeproj/FAWAZPHO/Info.plist
           rm -rf FAWAZPHO.xcodeproj/FAWAZPHO/Assets.xcassets
           unzip -q Assets.xcassets.zip -d FAWAZPHO.xcodeproj/FAWAZPHO/
-          sed -i '' 's/ALWAYS_SEARCH_USER_PATHS = YES;/ALWAYS_SEARCH_USER_PATHS = NO;/g' FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj/project.pbxproj
+
       - name: Set up code signing
         script: |
-          xcode-project use-profiles --project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj
+          xcode-project use-profiles --project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj"
 
-       - name: Build IPA
+      - name: Build IPA
         script: |
-          set -o pipefail
-          xcodebuild \
-            -project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
-            -scheme "FAWAZPHO" \
-            -configuration Release \
-            -archivePath "$CM_BUILD_DIR/build/FAWAZPHO.xcarchive" \
-            archive \
-            ALWAYS_SEARCH_USER_PATHS=NO \
-            DEVELOPMENT_TEAM=Q5RJ55W28X \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="FAWAZPHO_AppStore" \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
-            | tee "$CM_BUILD_DIR/xcode-full.log"~
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
+            --scheme "FAWAZPHO" \
+            --archive-xcargs "ALWAYS_SEARCH_USER_PATHS=NO"
+
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
