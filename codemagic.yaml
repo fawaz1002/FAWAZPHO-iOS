@@ -27,12 +27,20 @@ workflows:
         script: |
           xcode-project use-profiles --project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj
 
-      - name: Build IPA
+            - name: Build IPA
         script: |
-          xcode-project build-ipa \
-            --project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
-            --scheme "FAWAZPHO" \
-            --archive-xcargs "ALWAYS_SEARCH_USER_PATHS=NO"
+          set -o pipefail
+          xcodebuild \
+            -project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
+            -scheme "FAWAZPHO" \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/FAWAZPHO.xcarchive" \
+            archive \
+            ALWAYS_SEARCH_USER_PATHS=NO \
+            DEVELOPMENT_TEAM=Q5RJ55W28X \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            | tee "$CM_BUILD_DIR/xcode-full.log"
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
