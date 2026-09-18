@@ -29,9 +29,10 @@ workflows:
 
       - name: Build IPA
         script: |
-          xcode-project build-ipa \
+                   xcode-project build-ipa \
             --project "$CM_BUILD_DIR/FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj" \
-            --scheme "FAWAZPHO"
+            --scheme "FAWAZPHO" \
+            --archive-xcargs "ALWAYS_SEARCH_USER_PATHS=NO"
 
     artifacts:
       - build/ios/ipa/*.ipa
