@@ -25,7 +25,7 @@ workflows:
 
       - name: Set up code signing
         script: |
-          xcode-project use-profiles
+          xcode-project use-profiles --project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj
 
       - name: Build IPA
         script: |
