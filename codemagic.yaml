@@ -22,7 +22,7 @@ workflows:
           cp Info.plist FAWAZPHO.xcodeproj/FAWAZPHO/Info.plist
           rm -rf FAWAZPHO.xcodeproj/FAWAZPHO/Assets.xcassets
           unzip -q Assets.xcassets.zip -d FAWAZPHO.xcodeproj/FAWAZPHO/
-
+          sed -i '' 's/ALWAYS_SEARCH_USER_PATHS = YES;/ALWAYS_SEARCH_USER_PATHS = NO;/g' FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj/project.pbxproj
       - name: Set up code signing
         script: |
           xcode-project use-profiles --project FAWAZPHO.xcodeproj/FAWAZPHO.xcodeproj
